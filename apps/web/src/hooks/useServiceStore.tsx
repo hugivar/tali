@@ -3,7 +3,7 @@ import { devtools, persist } from 'zustand/middleware'
 
 interface ServiceState {
     service: string,
-    setService: (string) => void
+    setService: (serviceName: string) => void
 }
 
 const useServiceStore = create<ServiceState>()(
@@ -11,7 +11,7 @@ const useServiceStore = create<ServiceState>()(
         persist(
             (set) => ({
                 service: 'todoist',
-                setService: (serviceName: string) => set(() => ({ service: serviceName })),
+                setService: (serviceName: string) => set(() => ({ service: serviceName }))
             }),
             {
                 name: 'service-storage',

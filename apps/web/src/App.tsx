@@ -4,7 +4,7 @@ import viteLogo from '/vite.svg'
 import { ChakraProvider } from '@chakra-ui/react'
 import ServicesPanel from './ServicesPanel'
 import TaskList from './TaskList';
-import { VStack, Flex, Box, Square, Center, Text } from '@chakra-ui/react'
+import { VStack, Flex, Box, Center, Text } from '@chakra-ui/react'
 
 function App() {
   const [count, setCount] = useState(0)

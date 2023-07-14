@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image, IconButton } from '@chakra-ui/react'
 import useServiceStore from './hooks/useServiceStore';
 
