@@ -4,7 +4,26 @@ import { TodoistApi } from '@doist/todoist-api-typescript'
 
 const addService = (service: string) => {
     if (service === 'todoist') {
-
+        fetch(`https://todoist.com/oauth/authorize?client_id=${import.meta.env.VITE_TODOIST_CLIENT_ID}&scope=data:read_write&state=1234`, {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "accept-language": "en-US,en;q=0.9",
+                "sec-ch-ua": "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"macOS\"",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "cross-site",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": "https://tali-web.vercel.app/",
+            "referrerPolicy": "origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        });
     };
 };
 
