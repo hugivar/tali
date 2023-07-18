@@ -23,10 +23,12 @@ const refreshService = (service: string, callback: () => void): void => {
 const TaskList = () => {
     const { service } = useServiceStore();
 
+    const hanndleRefresh = () => { };
+
     return (
         <Box>
             <Button onClick={() => addService(service)}>Add {service}</Button>
-            <Button onClick={() => refreshService(service)}>Refresh</Button>
+            <Button onClick={() => refreshService(service, hanndleRefresh)}>Refresh</Button>
             <Text>Task List</Text>
             <Text>Service: {service}</Text>
         </Box>
