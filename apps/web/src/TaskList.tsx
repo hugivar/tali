@@ -17,11 +17,11 @@ const addService = (service: string) => {
                 "sec-fetch-user": "?1",
                 "upgrade-insecure-requests": "1"
             },
-            "referrer": "https://tali.so/",
+            "referrer": "https://tali.so",
             "referrerPolicy": "origin-when-cross-origin",
             "body": null,
             "method": "GET",
-            // "mode": "cors",
+            "mode": "no-cors",
             "credentials": "include"
         });
     };
