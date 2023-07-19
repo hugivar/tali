@@ -5,10 +5,9 @@ import { TodoistApi } from '@doist/todoist-api-typescript'
 declare interface Window { TODOIST_CLIENT_ID: any }
 
 const addService = (service: string) => {
-    const TODOIST_CLIENT_ID = (window as any).TODOIST_CLIENT_ID;
-
     if (service === 'todoist') {
-        fetch(`https://todoist.com/oauth/authorize?client_id=${TODOIST_CLIENT_ID}&scope=data:read_write&state=1234`, {
+        // @ts-ignore
+        fetch(`https://todoist.com/oauth/authorize?client_id=${window.TODOIST_CLIENT_ID}&scope=data:read_write&state=1234`, {
             "headers": {
                 "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
                 "accept-language": "en-US,en;q=0.9",
