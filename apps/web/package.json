@@ -2,36 +2,45 @@
   "name": "web",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "clean": "rm -rf node_modules",
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "clean": "rm -rf node_modules .next",
+    "build": "next build",
+    "dev": "next dev -p 3002",
+    "lint": "next lint",
+    "start": "next start"
   },
   "dependencies": {
+    "@chakra-ui/next-js": "^2.1.5",
     "@chakra-ui/react": "^2.7.1",
     "@doist/todoist-api-typescript": "^2.1.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "axios": "^1.4.0",
+    "cookie": "^0.5.0",
     "framer-motion": "^10.12.20",
+    "logger": "workspace:*",
+    "next": "^13.4.1",
+    "query-string": "^8.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.63.6",
     "zustand": "^4.3.9"
   },
   "devDependencies": {
-    "@types/node": "^17.0.12",
+    "@types/cookie": "^0.5.1",
+    "@types/jest": "^26.0.22",
+    "@types/node": "^17.0.45",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
     "@vitejs/plugin-react": "^4.0.0",
     "eslint": "^8.44.0",
+    "eslint-config-custom": "workspace:*",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.1",
-    "typescript": "^5.0.2",
+    "tsconfig": "workspace:*",
     "vite": "^4.4.0"
   }
 }

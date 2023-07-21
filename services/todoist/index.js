@@ -29,7 +29,6 @@ app.get('/oauth/redirect', (req, res) => {
         url: `https://todoist.com/oauth/access_token?client_id=${clientID}&client_secret=${clientSecret}&code=${requestToken}&redirect_uri=https://tali.so`
     }).then((response) => {
         const accessToken = response.data.access_token;
-        console.log('index line:48', accessToken);
         res.send(accessToken)
     }).catch((err) => {
         console.log(err);
