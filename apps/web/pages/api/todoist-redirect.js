@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { setCookie } from '../../src/utils/cookies'
 
-const clientID = process.env.CLIENT_ID
-const clientSecret = process.env.CLIENT_SECRET
+const clientID = process.env.TODOIST_CLIENT_ID
+const clientSecret = process.env.TODOIST_CLIENT_SECRET
 
 export default function handler(req, res) {
     const requestToken = req.query.code;
