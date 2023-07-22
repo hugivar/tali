@@ -16,7 +16,7 @@ const addService = (service: string, router: any) => {
     }
 };
 
-const refreshService = async (service: string, callback: (items: any[]) => void): void => {
+const refreshService = async (service: string, callback: (items: any[]) => void): Promise<void> => {
     if (service === 'todoist') {
         const token = localStorage.getItem('todoistAccessToken') || "";
         const api = new TodoistApi(token);
