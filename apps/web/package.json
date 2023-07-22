@@ -15,6 +15,7 @@
     "@doist/todoist-api-typescript": "^2.1.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@linear/sdk": "^6.0.0",
     "axios": "^1.4.0",
     "cookie": "^0.5.0",
     "framer-motion": "^10.12.20",

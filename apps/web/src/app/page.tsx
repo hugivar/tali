@@ -9,9 +9,16 @@ export default function App() {
     const router = useRouter();
     const searchParams = useSearchParams()
     const todoistToken = searchParams?.get('todoistAccessToken')
+    const linearToken = searchParams?.get('linearAccessToken')
 
     if (todoistToken) {
         localStorage.setItem('todoistAccessToken', todoistToken);
+
+        router.push("/");
+    }
+
+    if (linearToken) {
+        localStorage.setItem('linearAccessToken', linearToken);
 
         router.push("/");
     }

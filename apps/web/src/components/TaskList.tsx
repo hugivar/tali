@@ -2,6 +2,7 @@ import { Box, Button, Text, VStack, StackDivider, Card, CardBody } from '@chakra
 import { useRouter } from 'next/navigation'
 import useServiceStore from '../hooks/useServiceStore';
 import { TodoistApi } from '@doist/todoist-api-typescript'
+import { LinearClient } from '@linear/sdk'
 import refresh from '../../public/images/refresh.svg';
 import Image from 'next/image';
 import SidebarContent from './SidebarContent';
@@ -10,9 +11,12 @@ const addService = (service: string, router: any) => {
     if (service === 'todoist') {
         router.push('https://todoist.com/oauth/authorize?client_id=0ac0076a7b1044299c3b00cde86f5844&scope=data:read,data:delete&state=1223412412');
     }
+    if (service === 'linear') {
+        router.push('https://linear.app/oauth/authorize?client_id=df129d1361fe2df84303be8139d2497a&scope=read,write&redirect_uri=https://tali.so/api/linear-redirect&state=1223412412&response_type=code&prompt=consent&actor=user')
+    }
 };
 
-const refreshService = (service: string, callback: (items: any[]) => void): void => {
+const refreshService = async (service: string, callback: (items: any[]) => void): void => {
     if (service === 'todoist') {
         const token = localStorage.getItem('todoistAccessToken') || "";
         const api = new TodoistApi(token);
@@ -22,6 +26,22 @@ const refreshService = (service: string, callback: (items: any[]) => void): void
                 callback(items);
             })
             .catch((error) => console.log(error))
+    }
+    if (service === 'linear') {
+        const token = localStorage.getItem('linearAccessToken') || "";;
+        const client = new LinearClient({
+            accessToken: token
+        });
+
+        const me = await client.viewer;
+        const myIssues = await me.assignedIssues();
+
+        if (myIssues.nodes.length) {
+            callback(myIssues.nodes);
+        } else {
+            console.log(`${me.displayName} has no issues`);
+        }
+
     }
 }
 
@@ -33,7 +53,12 @@ const TaskList = () => {
         setServiceData('todoist', items);
     };
 
-    const token = service === 'todoist' ? window?.localStorage?.getItem('todoistAccessToken') : null;
+    const token = service === 'todoist'
+        ? window?.localStorage?.getItem('todoistAccessToken')
+        : service === 'linear'
+            ? window?.localStorage?.getItem('linearAccessToken')
+            : null;
+
     const { tasks } = serviceData.find((data: any) => data.service === service)
 
     return (
