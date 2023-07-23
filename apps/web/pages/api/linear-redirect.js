@@ -9,7 +9,7 @@ export default function handler(req, res) {
     params.append('client_id', clientID);
     params.append('client_secret', clientSecret);
     params.append('code', requestToken);
-    params.append('redirect_uri', 'https://tali.so');
+    params.append('redirect_uri', 'https://tali.so/api/linear-redirect');
     params.append('grant_type', 'authorization_code');
     axios.post('https://api.linear.app/oauth/token', params)
         .then((response) => {
