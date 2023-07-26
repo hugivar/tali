@@ -34,7 +34,8 @@ COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 # COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 RUN npm i -g pnpm
-RUN pnpm install
+RUN pnpm fetch
+RUN pnpm install -r --offline
 
 # Build the project
 COPY --from=builder /app/out/full/ .
@@ -46,7 +47,6 @@ COPY turbo.json turbo.json
 
 # ARG TURBO_TOKEN
 # ENV TURBO_TOKEN=$TURBO_TOKEN
-
 RUN npx turbo run build --filter=dashboard...
 
 FROM base AS runner
@@ -62,8 +62,12 @@ COPY --from=installer /app/dashboard/package.json .
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-# COPY --from=installer --chown=nextjs:nodejs /app/dashboard/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/dashboard/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/dashboard/.next/static ./dashboard/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/dashboard/public ./dashboard/public
 
-CMD npx next dev -p 4000
+EXPOSE 4000
+ENV PORT 4000
+ENV HOSTNAME localhost
+
+CMD ["node", "dashboard/server.js"]

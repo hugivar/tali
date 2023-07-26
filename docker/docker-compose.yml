@@ -10,7 +10,9 @@ services:
   dashboard:
     container_name: tali-dashboard
     image: hugivar/tali:latest
-    restart: always
+    ports:
+      - 4000:4000/tcp
+    # restart: always
   studio:
     container_name: supabase-studio
     image: supabase/studio:v0.23.06
