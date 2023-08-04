@@ -53,11 +53,12 @@ const TaskList = () => {
         setServiceData('todoist', items);
     };
 
-    const token = service === 'todoist'
-        ? window?.localStorage?.getItem('todoistAccessToken')
-        : service === 'linear'
-            ? window?.localStorage?.getItem('linearAccessToken')
-            : null;
+    // const token = service === 'todoist'
+    //     ? window?.localStorage?.getItem('todoistAccessToken')
+    //     : service === 'linear'
+    //         ? window?.localStorage?.getItem('linearAccessToken')
+    //         : null;
+    const token = null;
 
     const { tasks } = serviceData.find((data: any) => data.service === service)
 
