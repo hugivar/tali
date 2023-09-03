@@ -5,9 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import ServicesPanel from '../components/ServicesPanel'
 import TaskList from '../components/TaskList';
 import { VStack, Flex, Box, Container, Text, Switch, FormControl, FormLabel, Divider, Card, InputGroup, InputLeftAddon, CardBody, Input, Progress, HStack } from '@chakra-ui/react'
-import { HiOutlineClock } from 'react-icons/hi'
+import { HiOutlineClock } from 'react-icons/hi';
+import { trpc } from '../utils/trpc';
+import TaskView from '~/components/TaskView';
 
-export default function App() {
+function App() {
     const [tomorrowView, showTomorrowView] = useState(false);
     const [timeBasedProgress, setTimeBasedProgress] = useState(false);
     const [totalHours, setTotalHours] = useState(8);
@@ -28,6 +30,12 @@ export default function App() {
 
         router.push("/");
     }
+
+    return (
+        <Flex>
+            <TaskView />
+        </Flex>
+    );
 
     return (
         <Flex>
@@ -56,7 +64,6 @@ export default function App() {
                         </HStack>
                         <Text
                             fontSize='5xl'
-                            bgImage="linear-gradient(to right, #3b82f6, #ef4444)"
                             bgClip="text"
                             color="transparent"
                         >Today view</Text>
@@ -105,7 +112,6 @@ export default function App() {
                             <Divider />
                             <Text
                                 fontSize='5xl'
-                                bgImage="linear-gradient(to right, #3b82f6, #ef4444)"
                                 bgClip="text"
                                 color="transparent"
                             >Tomorrow view</Text>
@@ -156,3 +162,5 @@ export default function App() {
         </Flex>
     );
 }
+
+export default trpc.withTRPC(App);

@@ -10,7 +10,10 @@
         "name": "next"
       }
     ],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "paths": {
+      "~/*": ["src/*"]
+    }
   },
   "include": [
     "src",
