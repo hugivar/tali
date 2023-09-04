@@ -40,8 +40,6 @@ import { coordinateGetter as multipleContainersCoordinateGetter } from './multip
 import Item from './TaskItem';
 import Container from './TaskContainer';
 
-import { createRange } from '~/utils/createRange';
-
 const animateLayoutChanges: AnimateLayoutChanges = (args) =>
     defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
@@ -164,14 +162,12 @@ export default function MultipleContainers({
     vertical = false,
     scrollable,
 }: Props) {
-    const [items, setItems] = useState<Items>(
-        () =>
-            initialItems ?? {
-                Overdue: createRange(itemCount, (index) => `Overdue${index + 1}`),
-                Today: createRange(itemCount, (index) => `Today${index + 1}`),
-                Tomorrow: createRange(itemCount, (index) => `Tomorrow${index + 1}`),
-                Upcoming: createRange(itemCount, (index) => `Upcoming${index + 1}`),
-            }
+    const [items, setItems] = useState<Items>({
+        Overdue: [],
+        Today: initialItems,
+        Tomorrow: [],
+        Upcoming: [],
+    }
     );
     const [containers, setContainers] = useState(
         Object.keys(items) as UniqueIdentifier[]
@@ -474,8 +470,8 @@ export default function MultipleContainers({
                                     return (
                                         <SortableItem
                                             disabled={isSortingContainer}
-                                            key={value}
-                                            id={value}
+                                            key={value.id}
+                                            id={value.text}
                                             index={index}
                                             handle={handle}
                                             style={getItemStyles}
@@ -694,7 +690,6 @@ function SortableItem({
             transform={transform}
             fadeIn={mountedWhileDragging}
             listeners={listeners}
-            renderItem={renderItem}
         />
     );
 }

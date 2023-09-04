@@ -1,3 +1,5 @@
+const { i18n } = require('./next-i18next.config');
+
 module.exports = {
     reactStrictMode: true,
     output: 'standalone',
@@ -14,6 +16,21 @@ module.exports = {
                 ]
             }
         ]
+    },
+    async redirects() {
+        return [
+            {
+                source: '/',
+                destination: '/dashboard',
+                permanent: false,
+            },
+        ];
+    },
+    i18n,
+
+    /** We run eslint as a separate task in CI */
+    eslint: {
+        ignoreDuringBuilds: !!process.env.CI,
     },
     images: {
         formats: ['image/avif', 'image/webp'],
