@@ -3,8 +3,8 @@ import type { DraggableSyntheticListeners } from '@dnd-kit/core';
 import type { Transform } from '@dnd-kit/utilities';
 import { Card, CardBody } from '@chakra-ui/react'
 
-import { Handle } from './TaskHandle';
-import { Remove } from './TaskRemove';
+import { Handle } from '../TaskHandle';
+import { Remove } from '../TaskRemove';
 
 export interface Props {
     dragOverlay?: boolean;
@@ -77,21 +77,7 @@ const Item = React.memo(
                 };
             }, [dragOverlay]);
 
-            return renderItem ? (
-                renderItem({
-                    dragOverlay: Boolean(dragOverlay),
-                    dragging: Boolean(dragging),
-                    sorting: Boolean(sorting),
-                    index,
-                    fadeIn: Boolean(fadeIn),
-                    listeners,
-                    ref,
-                    style,
-                    transform,
-                    transition,
-                    value,
-                })
-            ) : (
+            return (
                 <Card
                     ref={ref}
                     marginY={4}

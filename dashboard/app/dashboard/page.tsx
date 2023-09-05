@@ -1,23 +1,15 @@
 "use client";
 
 import { useIsMutating } from '@tanstack/react-query';
-import { inferProcedureOutput } from '@trpc/server';
-import clsx from 'clsx';
 import {
-    GetStaticPaths,
-    GetStaticPropsContext,
     InferGetStaticPropsType,
 } from 'next';
-import { i18n } from 'next-i18next.config';
 import Head from 'next/head';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { useLocale } from '~/utils/use-locale';
-import { AppRouter } from '~/server/routers/_app';
-import { ssgInit } from '~/server/ssg-init';
 import { trpc } from '~/utils/trpc';
-import { useClickOutside } from '~/utils/use-click-outside';
-import TaskView from '~/components/TaskView';
+import TaskView from '~/components/tasks/tasks-view';
+import { isPast, isToday, isTomorrow } from 'date-fns'
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 export default function TodosPage(props: PageProps) {
@@ -61,6 +53,27 @@ export default function TodosPage(props: PageProps) {
         }
     }, [number, utils]);
 
+    const taskItems = allTasks.data ? allTasks.data.reduce((acc, curr) => {
+        if (isPast(curr.dueDate)) {
+            acc['Overdue'].push(curr.text);
+        }
+        else if (isToday(curr.dueDate)) {
+            acc['Today'].push(curr.text);
+        }
+        else if (isTomorrow(curr.dueDate)) {
+            acc['Tomorrow'].push(curr.text);
+        } else {
+            acc['Upcoming'].push(curr.text);
+        }
+
+        return acc;
+    }, {
+        "Overdue": [],
+        "Today": [],
+        "Tomorrow": [],
+        "Upcoming": []
+    }) : [];
+
     return (
         <>
             <Head>
@@ -74,21 +87,7 @@ export default function TodosPage(props: PageProps) {
                 </header>
 
                 <section className="main">
-                    {/* <label htmlFor="toggle-all">{t('mark_all_as_complete')}</label>
-                    <ul className="todo-list">
-                        {allTasks.data
-                            ?.filter(({ completed }) =>
-                                props.filter === 'completed'
-                                    ? completed
-                                    : props.filter === 'active'
-                                        ? !completed
-                                        : true,
-                            )
-                            .map((task) => (
-                                <ListItem key={task.id} task={task} />
-                            ))}
-                    </ul> */}
-                    <TaskView items={allTasks?.data || []} />
+                    <TaskView items={taskItems || []} />
                 </section>
             </section>
         </>
