@@ -1,20 +1,18 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-    Modifiers,
-    useDroppable,
     UniqueIdentifier,
     KeyboardCoordinateGetter,
 } from '@dnd-kit/core';
 import {
     SortableContext,
     useSortable,
-    arrayMove,
     verticalListSortingStrategy,
     SortingStrategy,
     horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { Card, Button } from '@chakra-ui/react';
 
 import Item from './task-item';
 import DraggableContainer from './draggable-container';
@@ -46,6 +44,7 @@ interface Props {
     strategy?: SortingStrategy;
     scrollable?: boolean;
     vertical?: boolean;
+    onEdit?: any
 }
 
 export const TRASH_ID = 'void';
@@ -61,22 +60,22 @@ export default function TasksView({
     strategy = verticalListSortingStrategy,
     vertical = false,
     scrollable,
+    onEdit
 }: Props) {
     const [items, setItems] = useState<Items>(initialItems);
-    const [containers, setContainers] = useState(
-        Object.keys(items) as UniqueIdentifier[]
-    );
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+
+    const containers = Object.keys(items) as UniqueIdentifier[];
     const isSortingContainer = activeId ? containers.includes(activeId) : false;
 
     return (
         <DraggableContainer
             items={items}
             setItems={setItems}
+            onEdit={onEdit}
             activeId={activeId}
             setActiveId={setActiveId}
             containers={containers}
-            setContainers={setContainers}
         >
             <div
                 style={{
@@ -104,12 +103,15 @@ export default function TasksView({
                             scrollable={scrollable}
                             style={containerStyle}
                         >
+                            <Card>
+                                <Button>Add a task</Button>
+                            </Card>
                             <SortableContext items={items[containerId]} strategy={strategy}>
                                 {items[containerId].map((value, index) => {
                                     return (
                                         <SortableItem
                                             disabled={isSortingContainer}
-                                            key={value}
+                                            key={value.id}
                                             id={value}
                                             index={index}
                                             items={items}

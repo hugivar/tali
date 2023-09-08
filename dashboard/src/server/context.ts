@@ -23,6 +23,7 @@ export interface CreateInnerContextOptions
  *
  * @see https://trpc.io/docs/context#inner-and-outer-context
  */
+// @ts-ignore
 export async function createInnerTRPCContext(opts?: CreateInnerContextOptions) {
   return {
     prisma,

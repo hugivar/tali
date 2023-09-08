@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { DraggableSyntheticListeners } from '@dnd-kit/core';
 import type { Transform } from '@dnd-kit/utilities';
 import { Card, CardBody } from '@chakra-ui/react'
@@ -65,6 +65,8 @@ const Item = React.memo(
             },
             ref
         ) => {
+            const inputRef = useRef<HTMLInputElement>(null);
+
             useEffect(() => {
                 if (!dragOverlay) {
                     return;
@@ -79,6 +81,7 @@ const Item = React.memo(
 
             return (
                 <Card
+                    // @ts-ignore
                     ref={ref}
                     marginY={4}
                     marginX={2}
@@ -89,7 +92,24 @@ const Item = React.memo(
                         {...props}
                         tabIndex={!handle ? 0 : undefined}
                     >
-                        {value}
+                        <input
+                            className="edit"
+                            // @ts-ignore
+                            value={value.text}
+                            ref={inputRef}
+                        // onChange={(e) => {
+                        //     const newText = e.currentTarget.value;
+                        //     setText(newText);
+                        // }}
+                        // onKeyPress={(e) => {
+                        //     if (e.key === 'Enter') {
+                        //         editTask.mutate({
+                        //             id: task.id,
+                        //             data: { text },
+                        //         });
+                        //     }
+                        // }}
+                        />
                         <span>
                             {onRemove ? (
                                 <Remove onClick={onRemove} />

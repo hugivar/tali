@@ -27,6 +27,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'off',
     // custom
     "no-undef": "off",
+    "no-var": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-argument": "off",
@@ -34,6 +35,9 @@ module.exports = {
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-misused-promises": "off"
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/restrict-plus-operands": "off",
+    "@typescript-eslint/require-await": "off"
   },
 }

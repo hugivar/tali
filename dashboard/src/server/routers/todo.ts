@@ -28,24 +28,19 @@ export const todoRouter = router({
         id: z.string().uuid(),
         data: z.object({
           completed: z.boolean().optional(),
+          dueDate: z.date().optional(),
           text: z.string().min(1).optional(),
         }),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const { id, data } = input;
+      console.log('todo line:38', data);
       const todo = await ctx.task.update({
         where: { id },
         data,
       });
       return todo;
-    }),
-  toggleAll: baseProcedure
-    .input(z.object({ completed: z.boolean() }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.task.updateMany({
-        data: { completed: input.completed },
-      });
     }),
   delete: baseProcedure
     .input(z.string().uuid())

@@ -25,6 +25,9 @@ const TaskOverlay = ({
     getItemStyles = () => ({}),
     wrapperStyle = () => ({})
 }: any) => {
+    if (typeof window !== "object") {
+        return null;
+    }
 
     return createPortal(
         <DragOverlay adjustScale={false} dropAnimation={dropAnimation}>

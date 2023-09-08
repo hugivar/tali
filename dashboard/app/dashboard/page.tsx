@@ -1,19 +1,13 @@
 "use client";
 
 import { useIsMutating } from '@tanstack/react-query';
-import {
-    InferGetStaticPropsType,
-} from 'next';
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { useLocale } from '~/utils/use-locale';
 import { trpc } from '~/utils/trpc';
 import TaskView from '~/components/tasks/tasks-view';
-import { isPast, isToday, isTomorrow } from 'date-fns'
+import { isBefore, isToday, isTomorrow } from 'date-fns'
 
-type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
-export default function TodosPage(props: PageProps) {
-    const { t } = useLocale();
+export default function DashboardPage() {
     /*
      * This data will be hydrated from the `prefetch` in `getStaticProps`. This means that the page
      * will be rendered with the data from the server and there'll be no client loading state 👍
@@ -23,25 +17,6 @@ export default function TodosPage(props: PageProps) {
     });
 
     const utils = trpc.useContext();
-    const addTask = trpc.todo.add.useMutation({
-        async onMutate({ text }) {
-            /**
-             * Optimistically update the data
-             * with the newly added task
-             */
-            await utils.todo.all.cancel();
-            const tasks = allTasks.data ?? [];
-            utils.todo.all.setData(undefined, [
-                ...tasks,
-                {
-                    id: `${Math.random()}`,
-                    completed: false,
-                    text,
-                    createdAt: new Date(),
-                },
-            ]);
-        },
-    });
 
     const number = useIsMutating();
     useEffect(() => {
@@ -53,17 +28,25 @@ export default function TodosPage(props: PageProps) {
         }
     }, [number, utils]);
 
-    const taskItems = allTasks.data ? allTasks.data.reduce((acc, curr) => {
-        if (isPast(curr.dueDate)) {
-            acc['Overdue'].push(curr.text);
+    const taskItems = allTasks.data ? allTasks.data.reduce((acc, curr: any) => {
+        const today = new Date();
+        var todayNoTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        var noTime = new Date(curr.dueDate.getFullYear(), curr.dueDate.getMonth(), curr.dueDate.getDate());
+
+        if (isBefore(noTime, todayNoTime)) {
+            //@ts-ignore
+            acc['Overdue'].push(curr);
         }
-        else if (isToday(curr.dueDate)) {
-            acc['Today'].push(curr.text);
+        else if (isToday(new Date(curr.dueDate.toDateString()))) {
+            //@ts-ignore
+            acc['Today'].push(curr);
         }
         else if (isTomorrow(curr.dueDate)) {
-            acc['Tomorrow'].push(curr.text);
+            //@ts-ignore
+            acc['Tomorrow'].push(curr);
         } else {
-            acc['Upcoming'].push(curr.text);
+            //@ts-ignore
+            acc['Upcoming'].push(curr);
         }
 
         return acc;
@@ -73,6 +56,12 @@ export default function TodosPage(props: PageProps) {
         "Tomorrow": [],
         "Upcoming": []
     }) : [];
+
+    const mutation = trpc.todo.edit.useMutation();
+    const handleUpdateTask = (id: string, data: any) => {
+        console.log('page line:119', id, data);
+        mutation.mutate({ id, data });
+    };
 
     return (
         <>
@@ -85,9 +74,9 @@ export default function TodosPage(props: PageProps) {
                 <header className="header">
                     <h1>Tali</h1>
                 </header>
-
                 <section className="main">
-                    <TaskView items={taskItems || []} />
+                    {/* @ts-ignore */}
+                    <TaskView items={taskItems || undefined} onEdit={handleUpdateTask} />
                 </section>
             </section>
         </>

@@ -18,27 +18,33 @@ import {
 import {
     arrayMove
 } from '@dnd-kit/sortable';
+
+import { findContainer } from '~/utils/dnd-utils';
 import { coordinateGetter } from '../multipleContainersKeyboardCoordinates';
 
 const TRASH_ID = 'void';
 const PLACEHOLDER_ID = 'placeholder';
 
-function getNextContainerId(items) {
-    const containerIds = Object.keys(items);
-    const lastContainerId = containerIds[containerIds.length - 1];
-
-    return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
-}
-
-const DraggableContainer = ({ items, setItems, activeId, setActiveId, setContainers, children }: any) => {
-    const [clonedItems, setClonedItems] = useState<Items | null>(null);
+const DraggableContainer = ({ items, setItems, activeId, setActiveId, onEdit, children }: any) => {
+    const [clonedItems, setClonedItems] = useState<any | null>(null);
 
     const lastOverId = useRef<UniqueIdentifier | null>(null);
     const recentlyMovedToNewContainer = useRef(false);
 
     const sensors = useSensors(
-        useSensor(MouseSensor),
-        useSensor(TouchSensor),
+        useSensor(MouseSensor, {
+            // Require the mouse to move by 10 pixels before activating
+            activationConstraint: {
+                distance: 10,
+            },
+        }),
+        useSensor(TouchSensor, {
+            // Press delay of 250ms, with tolerance of 5px of movement
+            activationConstraint: {
+                delay: 250,
+                tolerance: 5,
+            },
+        }),
         useSensor(KeyboardSensor, {
             coordinateGetter,
         })
@@ -121,14 +127,6 @@ const DraggableContainer = ({ items, setItems, activeId, setActiveId, setContain
         });
     }, [items]);
 
-    const findContainer = (id: UniqueIdentifier) => {
-        if (id in items) {
-            return id;
-        }
-
-        return Object.keys(items).find((key) => items[key].includes(id));
-    };
-
     const onDragCancel = () => {
         if (clonedItems) {
             // Reset items to their original state in case items have been
@@ -159,17 +157,17 @@ const DraggableContainer = ({ items, setItems, activeId, setActiveId, setContain
                     return;
                 }
 
-                const overContainer = findContainer(overId);
-                const activeContainer = findContainer(active.id);
+                const overContainer = findContainer(overId, items);
+                const activeContainer = findContainer(active.id, items);
                 if (!overContainer || !activeContainer) {
                     return;
                 }
 
                 if (activeContainer !== overContainer) {
-                    setItems((items) => {
+                    setItems((items: any) => {
                         const activeItems = items[activeContainer];
                         const overItems = items[overContainer];
-                        const overIndex = overItems.indexOf(overId);
+                        const overIndex: number = overItems.indexOf(overId);
                         const activeIndex = activeItems.indexOf(active.id);
 
                         let newIndex: number;
@@ -183,7 +181,7 @@ const DraggableContainer = ({ items, setItems, activeId, setActiveId, setContain
                                 active.rect.current.translated.top >
                                 over.rect.top + over.rect.height;
 
-                            const modifier = isBelowOverItem ? 1 : 0;
+                            const modifier: number = isBelowOverItem ? 1 : 0;
 
                             newIndex =
                                 overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
@@ -194,7 +192,7 @@ const DraggableContainer = ({ items, setItems, activeId, setActiveId, setContain
                         return {
                             ...items,
                             [activeContainer]: items[activeContainer].filter(
-                                (item) => item !== active.id
+                                (item: any) => item !== active.id
                             ),
                             [overContainer]: [
                                 ...items[overContainer].slice(0, newIndex),
@@ -209,17 +207,7 @@ const DraggableContainer = ({ items, setItems, activeId, setActiveId, setContain
                 }
             }}
             onDragEnd={({ active, over }) => {
-                if (active.id in items && over?.id) {
-                    setContainers((containers) => {
-                        const activeIndex = containers.indexOf(active.id);
-                        const overIndex = containers.indexOf(over.id);
-
-                        return arrayMove(containers, activeIndex, overIndex);
-                    });
-                }
-
                 const activeContainer = findContainer(active.id, items);
-
                 if (!activeContainer) {
                     setActiveId(null);
                     return;
@@ -232,42 +220,23 @@ const DraggableContainer = ({ items, setItems, activeId, setActiveId, setContain
                     return;
                 }
 
-                if (overId === TRASH_ID) {
-                    setItems((items) => ({
-                        ...items,
-                        [activeContainer]: items[activeContainer].filter(
-                            (id) => id !== activeId
-                        ),
-                    }));
-                    setActiveId(null);
-                    return;
-                }
-
-                if (overId === PLACEHOLDER_ID) {
-                    const newContainerId = getNextContainerId(items);
-
-                    unstable_batchedUpdates(() => {
-                        setContainers((containers) => [...containers, newContainerId]);
-                        setItems((items) => ({
-                            ...items,
-                            [activeContainer]: items[activeContainer].filter(
-                                (id) => id !== activeId
-                            ),
-                            [newContainerId]: [active.id],
-                        }));
-                        setActiveId(null);
-                    });
-                    return;
-                }
-
                 const overContainer = findContainer(overId, items);
 
                 if (overContainer) {
-                    const activeIndex = items[activeContainer].indexOf(active.id);
+                    // @ts-ignore
+                    const activeIndex = items[activeContainer].indexOf(active?.id?.id);
                     const overIndex = items[overContainer].indexOf(overId);
-
                     if (activeIndex !== overIndex) {
-                        setItems((items) => ({
+                        const currentDate = new Date();
+                        if (activeContainer === 'Tomorrow') {
+                            currentDate.setDate(currentDate.getDate() + 1)
+                        } else if (activeContainer === 'Upcoming') {
+                            currentDate.setDate(currentDate.getDate() + 2)
+                        }
+
+                        // @ts-ignore
+                        onEdit(active?.id?.id, { dueDate: currentDate });
+                        setItems((items: any) => ({
                             ...items,
                             [overContainer]: arrayMove(
                                 items[overContainer],

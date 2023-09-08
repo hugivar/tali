@@ -4,13 +4,11 @@ const prisma = new PrismaClient()
 
 const taskData: Prisma.TaskCreateInput[] = [
   {
-        id: '1',
-        text: 'Send email to Alice'
-    },
-    {
-        id: '2',
-        text: 'Meet John for lunch'
-    }
+      text: 'Send email to Alice'
+  },
+  {
+      text: 'Meet John for lunch'
+  }
 ]
 
 async function main() {
